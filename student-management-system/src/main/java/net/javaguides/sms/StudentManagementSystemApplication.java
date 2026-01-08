@@ -9,7 +9,7 @@ import net.javaguides.sms.entity.Student;
 import net.javaguides.sms.repository.StudentRepository;
 
 @SpringBootApplication
-public class StudentManagementSystemApplication implements CommandLineRunner{
+public class StudentManagementSystemApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
         SpringApplication.run(StudentManagementSystemApplication.class, args);
@@ -20,7 +20,6 @@ public class StudentManagementSystemApplication implements CommandLineRunner{
 
     @Override
     public void run(String... args) throws Exception {
-
 
 
     }

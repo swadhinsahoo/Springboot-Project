@@ -23,30 +23,28 @@ public class StudentController {
         return "students";
     }
 
-//    @GetMapping("/students/search")
+    //    @GetMapping("/students/search")
 //    public String searchStudents(@RequestParam("keyword") String keyword, Model model) {
 //        model.addAttribute("students", studentService.searchStudents(keyword));
 //        model.addAttribute("keyword", keyword); // 👈 ADD THIS LINE
 //        return "students";
 //    }
-@GetMapping("/students/search")
-public String searchStudents(
-        @RequestParam(value = "keyword", required = false) String keyword,
-        Model model) {
+    @GetMapping("/students/search")
+    public String searchStudents(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            Model model) {
 
-    // ✅ Handle empty / cleared search
-    if (keyword == null || keyword.trim().length() == 0) {
-        model.addAttribute("students", studentService.getAllStudents());
-        model.addAttribute("keyword", "");
+        // ✅ Handle empty / cleared search
+        if (keyword == null || keyword.trim().length() == 0) {
+            model.addAttribute("students", studentService.getAllStudents());
+            model.addAttribute("keyword", "");
+            return "students";
+        }
+
+        model.addAttribute("students", studentService.searchStudents(keyword));
+        model.addAttribute("keyword", keyword);
         return "students";
     }
-
-    model.addAttribute("students", studentService.searchStudents(keyword));
-    model.addAttribute("keyword", keyword);
-    return "students";
-}
-
-
 
 
     @GetMapping("/students/new")

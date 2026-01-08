@@ -9,7 +9,7 @@ import net.javaguides.sms.repository.StudentRepository;
 import net.javaguides.sms.service.StudentService;
 
 @Service
-public class StudentServiceImpl implements StudentService{
+public class StudentServiceImpl implements StudentService {
 
     private StudentRepository studentRepository;
 
@@ -42,6 +42,7 @@ public class StudentServiceImpl implements StudentService{
     public void deleteStudentById(Long id) {
         studentRepository.deleteById(id);
     }
+
     @Override
     public List<Student> searchStudents(String keyword) {
         return studentRepository
