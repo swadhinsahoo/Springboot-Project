@@ -42,5 +42,12 @@ public class StudentServiceImpl implements StudentService{
     public void deleteStudentById(Long id) {
         studentRepository.deleteById(id);
     }
+    @Override
+    public List<Student> searchStudents(String keyword) {
+        return studentRepository
+                .findByFirstNameContainingOrLastNameContainingOrEmailContaining(
+                        keyword, keyword, keyword);
+    }
+
 
 }
