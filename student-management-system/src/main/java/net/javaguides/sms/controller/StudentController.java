@@ -13,8 +13,13 @@ public class StudentController {
     private StudentService studentService;
 
     public StudentController(StudentService studentService) {
-        super();
         this.studentService = studentService;
+    }
+
+
+    @GetMapping("/")
+    public String landingPage() {
+        return "index";
     }
 
     @GetMapping("/students")
@@ -23,18 +28,9 @@ public class StudentController {
         return "students";
     }
 
-    //    @GetMapping("/students/search")
-//    public String searchStudents(@RequestParam("keyword") String keyword, Model model) {
-//        model.addAttribute("students", studentService.searchStudents(keyword));
-//        model.addAttribute("keyword", keyword); // 👈 ADD THIS LINE
-//        return "students";
-//    }
     @GetMapping("/students/search")
-    public String searchStudents(
-            @RequestParam(value = "keyword", required = false) String keyword,
-            Model model) {
+    public String searchStudents(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
 
-        // ✅ Handle empty / cleared search
         if (keyword == null || keyword.trim().length() == 0) {
             model.addAttribute("students", studentService.getAllStudents());
             model.addAttribute("keyword", "");
@@ -46,15 +42,10 @@ public class StudentController {
         return "students";
     }
 
-
     @GetMapping("/students/new")
     public String createStudentForm(Model model) {
-
-        // create student object to hold student form data
-        Student student = new Student();
-        model.addAttribute("student", student);
+        model.addAttribute("student", new Student());
         return "create_student";
-
     }
 
     @PostMapping("/students")
@@ -70,28 +61,20 @@ public class StudentController {
     }
 
     @PostMapping("/students/{id}")
-    public String updateStudent(@PathVariable Long id,
-                                @ModelAttribute("student") Student student,
-                                Model model) {
+    public String updateStudent(@PathVariable Long id, @ModelAttribute("student") Student student) {
 
-        // get student from database by id
         Student existingStudent = studentService.getStudentById(id);
-        existingStudent.setId(id);
         existingStudent.setFirstName(student.getFirstName());
         existingStudent.setLastName(student.getLastName());
         existingStudent.setEmail(student.getEmail());
 
-        // save updated student object
         studentService.updateStudent(existingStudent);
         return "redirect:/students";
     }
-
-    // handler method to handle delete student request
 
     @GetMapping("/students/{id}")
     public String deleteStudent(@PathVariable Long id) {
         studentService.deleteStudentById(id);
         return "redirect:/students";
     }
-
 }
