@@ -2,20 +2,26 @@ package net.javaguides.sms.service.impl;
 
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.javaguides.sms.entity.Student;
+import net.javaguides.sms.event.StudentCreatedEvent;
 import net.javaguides.sms.repository.StudentRepository;
 import net.javaguides.sms.service.StudentService;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
-        super();
+    // ✅ Constructor Injection (Enterprise Best Practice)
+    public StudentServiceImpl(StudentRepository studentRepository,
+                              ApplicationEventPublisher eventPublisher) {
         this.studentRepository = studentRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -23,9 +29,25 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findAll();
     }
 
+    /**
+     * ENTERPRISE FEATURE:
+     * - Saves student
+     * - Publishes domain event
+     * - Notification handled asynchronously
+     */
     @Override
+    @Transactional
     public Student saveStudent(Student student) {
-        return studentRepository.save(student);
+
+        // 1️⃣ Core business logic (DB transaction)
+        Student savedStudent = studentRepository.save(student);
+
+        // 2️⃣ Publish domain event (decoupled)
+        eventPublisher.publishEvent(
+                new StudentCreatedEvent(savedStudent)
+        );
+
+        return savedStudent;
     }
 
     @Override
@@ -49,6 +71,4 @@ public class StudentServiceImpl implements StudentService {
                 .findByFirstNameContainingOrLastNameContainingOrEmailContaining(
                         keyword, keyword, keyword);
     }
-
-
 }
